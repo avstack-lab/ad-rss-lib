@@ -96,8 +96,8 @@ bool RssResponseResolving::provideProperResponse(state::RssStateSnapshot const &
 
         if (currentState.situationType == situation::SituationType::Unstructured)
         {
-          spdlog::info("RssResponseResolving::provideProperResponse>> Unstructured state is dangerous: {}",
-                       currentState);
+          // spdlog::info("RssResponseResolving::provideProperResponse>> Unstructured state is dangerous: {}",
+          //              currentState);
           combineState(currentState.unstructuredSceneState,
                        driveAwayBrakeMin,
                        unstructuredDriveAwayToBrakeTransitionOccured,
@@ -107,7 +107,7 @@ bool RssResponseResolving::provideProperResponse(state::RssStateSnapshot const &
         }
         else // structured
         {
-          spdlog::info("RssResponseResolving::provideProperResponse>> Structured state is dangerous: {}", currentState);
+          // spdlog::info("RssResponseResolving::provideProperResponse>> Structured state is dangerous: {}", currentState);
 
           combineState(currentState.longitudinalState,
                        response.longitudinalResponse,

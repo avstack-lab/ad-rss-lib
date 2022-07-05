@@ -80,8 +80,8 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
     // Both longitudinal and lateral distances became dangerous at the same time
     if (isDangerous(rssState))
     {
-      spdlog::info("RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lon == t_b,lat) {}",
-                   rssState);
+      // spdlog::info("RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lon == t_b,lat) {}",
+      //              rssState);
     }
   }
   else if (nonDangerousStateToRemember.lateralSafe)
@@ -92,9 +92,9 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
     rssState.longitudinalState.response = state::LongitudinalResponse::None;
     if (isDangerous(rssState))
     {
-      spdlog::info(
-        "RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lat) No longitudinal response: {}",
-        rssState);
+      // spdlog::info(
+      //   "RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lat) No longitudinal response: {}",
+      //   rssState);
     }
   }
   else if (nonDangerousStateToRemember.longitudinalSafe)
@@ -103,9 +103,9 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
     rssState.lateralStateRight.response = state::LateralResponse::None;
     if (isDangerous(rssState))
     {
-      spdlog::info(
-        "RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lon) No lateral response: {}",
-        rssState);
+      // spdlog::info(
+      //   "RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lon) No lateral response: {}",
+      //   rssState);
     }
   }
   else
@@ -113,8 +113,8 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
     // no non dangerous state available
     if (isDangerous(rssState))
     {
-      spdlog::info("RssStructuredSceneNonIntersectionChecker>> State is dangerous, no non dangerous state available {}",
-                   rssState);
+      // spdlog::info("RssStructuredSceneNonIntersectionChecker>> State is dangerous, no non dangerous state available {}",
+      //              rssState);
     }
   }
 
