@@ -44,12 +44,12 @@ inline bool withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationV
   // check for generic member input ranges
   bool inValidInputRange = true;
   inValidInputRange = withinValidInputRange(input.accelMax, logErrors)
-    && withinValidInputRange(input.brakeMax, logErrors) && withinValidInputRange(input.brakeMin, logErrors)
-    && withinValidInputRange(input.brakeMinCorrect, logErrors);
+    && withinValidInputRange(input.brakeMax, logErrors) && withinValidInputRange(input.brakeMin, logErrors);
+    // && withinValidInputRange(input.brakeMinCorrect, logErrors);
   if (!inValidInputRange && logErrors)
   {
-    spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> {} has invalid member",
-                  input); // LCOV_EXCL_BR_LINE
+    // spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> (ID 0) {} has invalid member",
+    //               input); // LCOV_EXCL_BR_LINE
   }
 
   // check for individual input ranges
@@ -59,12 +59,12 @@ inline bool withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationV
       = (::ad::physics::Acceleration(0.) <= input.accelMax) && (input.accelMax <= ::ad::physics::Acceleration(1e2));
     if (!inValidInputRange && logErrors)
     {
-      spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> {} element {} out of "
-                    "valid input range [{}, {}]",
-                    input,
-                    input.accelMax,
-                    ::ad::physics::Acceleration(0.),
-                    ::ad::physics::Acceleration(1e2)); // LCOV_EXCL_BR_LINE
+      // spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> (ID 1) {} element {} (accelMax) out of "
+      //               "valid input range [{}, {}]",
+      //               input,
+      //               input.accelMax,
+      //               ::ad::physics::Acceleration(0.),
+      //               ::ad::physics::Acceleration(1e2)); // LCOV_EXCL_BR_LINE
     }
   }
 
@@ -73,12 +73,12 @@ inline bool withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationV
     inValidInputRange = (::ad::physics::Acceleration(-1e2) <= input.brakeMax) && (input.brakeMax <= input.brakeMin);
     if (!inValidInputRange && logErrors)
     {
-      spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> {} element {} out of "
-                    "valid input range [{}, {}]",
-                    input,
-                    input.brakeMax,
-                    ::ad::physics::Acceleration(-1e2),
-                    input.brakeMin); // LCOV_EXCL_BR_LINE
+      // spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> (ID 2) {} element {} (brakeMax) out of "
+      //               "valid input range [{}, {}]",
+      //               input,
+      //               input.brakeMax,
+      //               ::ad::physics::Acceleration(-1e2),
+      //               input.brakeMin); // LCOV_EXCL_BR_LINE
     }
   }
 
@@ -87,27 +87,27 @@ inline bool withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationV
     inValidInputRange = (input.brakeMax <= input.brakeMin) && (input.brakeMin <= input.brakeMinCorrect);
     if (!inValidInputRange && logErrors)
     {
-      spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> {} element {} out of "
-                    "valid input range [{}, {}]",
-                    input,
-                    input.brakeMin,
-                    input.brakeMax,
-                    input.brakeMinCorrect); // LCOV_EXCL_BR_LINE
+      // spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> (ID 3) {} element {} (brakeMin) out of "
+      //               "valid input range [{}, {}]",
+      //               input,
+      //               input.brakeMin,
+      //               input.brakeMax,
+      //               input.brakeMinCorrect); // LCOV_EXCL_BR_LINE
     }
   }
 
   if (inValidInputRange)
   {
-    inValidInputRange
-      = (input.brakeMin <= input.brakeMinCorrect) && (input.brakeMinCorrect < ::ad::physics::Acceleration(0.));
+    // inValidInputRange
+    //   = (input.brakeMin <= input.brakeMinCorrect) && (input.brakeMinCorrect < ::ad::physics::Acceleration(0.));
     if (!inValidInputRange && logErrors)
     {
-      spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> {} element {} out of "
-                    "valid input range [{}, {}]",
-                    input,
-                    input.brakeMinCorrect,
-                    input.brakeMin,
-                    ::ad::physics::Acceleration(0.)); // LCOV_EXCL_BR_LINE
+      // spdlog::error("withinValidInputRange(::ad::rss::world::LongitudinalRssAccelerationValues)>> (ID 4) {} element {} (brakeMinCorrect) out of "
+      //               "valid input range [{}, {}]",
+      //               input,
+      //               input.brakeMinCorrect,
+      //               input.brakeMin,
+      //               ::ad::physics::Acceleration(0.)); // LCOV_EXCL_BR_LINE
     }
   }
 

@@ -73,6 +73,7 @@ bool calculateLateralDistanceOffsetAfterStatedBrakingPattern(Speed const &curren
   Speed resultingSpeed = Speed(0.);
   Distance distanceOffsetAfterResponseTime = Distance(0.);
 
+  // lateral acceleration towards the other vehicle
   bool result = calculateSpeedInAcceleratedMovement(currentSpeed, acceleration, responseTime, resultingSpeed);
   result = result
     && calculateDistanceOffsetInAcceleratedMovement(
@@ -82,12 +83,15 @@ bool calculateLateralDistanceOffsetAfterStatedBrakingPattern(Speed const &curren
   if (std::signbit(static_cast<double>(resultingSpeed)) != std::signbit(static_cast<double>(deceleration)))
   {
     // if speed after stated braking pattern has the same direction as the acceleration
-    // further braking to full stop in that moving direction has to be added
+    // further braking to full stop in that moving direction has to be added to get to 0 vel
+    // spdlog::info("Applying deceleration test");
     result = result && calculateStoppingDistance(resultingSpeed, deceleration, distanceToStop);
   }
 
   if (result)
   {
+    // spdlog::info("distanceOffsetAfterResponseTime: {}, distanceToStop: {}",
+                  // distanceOffsetAfterResponseTime, distanceToStop);
     distanceOffset = distanceOffsetAfterResponseTime + distanceToStop;
   }
 
@@ -119,8 +123,9 @@ bool calculateSafeLongitudinalDistanceSameDirection(VehicleState const &leadingV
 
   if (result)
   {
+    // Must be at least 2 meters longitudinally
     safeDistance = distanceStatedBraking - distanceMaxBrake;
-    safeDistance = std::max(safeDistance, Distance(0.));
+    safeDistance = std::max(safeDistance, Distance(2.));
   }
 
   return result;
@@ -146,6 +151,8 @@ bool checkSafeLongitudinalDistanceSameDirection(VehicleState const &leadingVehic
   {
     isDistanceSafe = true;
   }
+  // spdlog::info("Vehicle Long Distance: {}, Safe Long Distance {}; safe: {}", vehicleDistance, safeDistance, isDistanceSafe);
+
   return result;
 }
 
@@ -253,8 +260,8 @@ bool calculateSafeLateralDistance(VehicleState const &leftVehicle,
   result = calculateLateralDistanceOffsetAfterStatedBrakingPattern( // LCOV_EXCL_LINE: wrong detection
     leftVehicle.velocity.speedLat.maximum,
     leftVehicle.dynamics.responseTime,
-    leftVehicle.dynamics.alphaLat.accelMax,
-    leftVehicle.dynamics.alphaLat.brakeMin,
+    -leftVehicle.dynamics.alphaLat.accelMax,
+    -leftVehicle.dynamics.alphaLat.brakeMin,
     distanceOffsetStatedBrakingLeft);
 
   result = result
@@ -268,11 +275,17 @@ bool calculateSafeLateralDistance(VehicleState const &leftVehicle,
   if (result)
   {
     // safe distance is the difference of both distances
-    safeDistance = distanceOffsetStatedBrakingLeft - distanceOffsetStatedBrakingRight;
+    // safeDistance = distanceOffsetStatedBrakingLeft - distanceOffsetStatedBrakingRight;
+    safeDistance = distanceOffsetStatedBrakingRight - distanceOffsetStatedBrakingLeft;
+
     //  plus the lateral fluctuation margin: here we use the 0.5*my of both
     safeDistance
       += 0.5 * (leftVehicle.dynamics.lateralFluctuationMargin + rightVehicle.dynamics.lateralFluctuationMargin);
-    safeDistance = std::max(safeDistance, Distance(0.));
+    // must be at least 1 meter laterally
+    safeDistance = std::max(safeDistance, Distance(1.));
+    // spdlog::info("Distance distanceOffsetStatedBrakingLeft: {}, distanceOffsetStatedBrakingRight: {}",
+    //                 distanceOffsetStatedBrakingLeft, distanceOffsetStatedBrakingRight);
+
   }
   return result;
 }
@@ -296,6 +309,7 @@ bool checkSafeLateralDistance(VehicleState const &leftVehicle,
   {
     isDistanceSafe = true;
   }
+  // spdlog::info("Vehicle Lat Distance: {}, Safe Lat Distance {}; safe: {}", vehicleDistance, safeDistance, isDistanceSafe);
 
   return result;
 }

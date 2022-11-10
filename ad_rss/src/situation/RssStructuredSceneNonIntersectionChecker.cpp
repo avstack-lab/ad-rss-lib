@@ -53,9 +53,9 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
   }
   else
   {
-    spdlog::error(
-      "RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection>> situation type invalid {}",
-      situation);
+    // spdlog::error(
+    //   "RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection>> situation type invalid {}",
+    //   situation);
   }
 
   // second calculate proper response in respect to the state before danger threshold according to definition 10 of the
@@ -67,6 +67,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
     if (previousNonDangerousState != mLastStatesBeforeDangerThresholdTime.end())
     {
       nonDangerousStateToRemember = previousNonDangerousState->second;
+      // spdlog::info("here...");
     }
   }
   else
@@ -96,6 +97,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
       //   "RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lat) No longitudinal response: {}",
       //   rssState);
     }
+    // spdlog::info("here2...");
   }
   else if (nonDangerousStateToRemember.longitudinalSafe)
   {
@@ -107,6 +109,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
       //   "RssStructuredSceneNonIntersectionChecker>> State is dangerous (t_b == t_b,lon) No lateral response: {}",
       //   rssState);
     }
+    // spdlog::info("here3...");
   }
   else
   {
@@ -116,6 +119,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
       // spdlog::info("RssStructuredSceneNonIntersectionChecker>> State is dangerous, no non dangerous state available {}",
       //              rssState);
     }
+    // spdlog::info("here4...");
   }
 
   // store state for the next time step
@@ -123,11 +127,12 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateNonIntersection(
   {
     auto const insertResult = mNewStatesBeforeDangerThresholdTime.insert(
       RssSafeStateBeforeDangerThresholdTimeMap::value_type(situation.situationId, nonDangerousStateToRemember));
+    // spdlog::info("here5...");
 
     if (!insertResult.second)
     {
       result = false;
-      spdlog::error("RssStructuredSceneNonIntersectionChecker>> map insertion failed unexpectedly");
+      // spdlog::error("RssStructuredSceneNonIntersectionChecker>> map insertion failed unexpectedly");
     }
   }
 
@@ -148,6 +153,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateSameDirection(Si
 bool RssStructuredSceneNonIntersectionChecker::calculateRssStateOppositeDirection(Situation const &situation,
                                                                                   state::RssState &rssState)
 {
+  // spdlog::info("Reached calculateRssStateOppositeDirection");
   bool result = calculateLongitudinalRssStateOppositeDirection(situation, rssState.longitudinalState);
   if (result)
   {
@@ -159,6 +165,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateRssStateOppositeDirectio
 bool RssStructuredSceneNonIntersectionChecker::calculateLongitudinalRssStateSameDirection(
   Situation const &situation, state::LongitudinalRssState &rssState)
 {
+  // spdlog::info("Reached calculateLongitudinalRssStateSameDirection");
   bool result = false;
 
   rssState.response = state::LongitudinalResponse::BrakeMin;
@@ -173,6 +180,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateLongitudinalRssStateSame
 
     // The ego vehicle is leading in this situation so we don't need to break longitudinal
     rssState.response = state::LongitudinalResponse::None;
+    // spdlog::info("Reached checkSafeLongitudinalDistanceSameDirection - ego leading");
 
     result = checkSafeLongitudinalDistanceSameDirection(situation.egoVehicleState,
                                                         situation.otherVehicleState,
@@ -183,6 +191,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateLongitudinalRssStateSame
   else
   {
     rssState.rssStateInformation.evaluator = state::RssStateEvaluator::LongitudinalDistanceSameDirectionOtherInFront;
+    // spdlog::info("Reached checkSafeLongitudinalDistanceSameDirection - other leading");
 
     result = checkSafeLongitudinalDistanceSameDirection(situation.otherVehicleState,
                                                         situation.egoVehicleState,
@@ -196,6 +205,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateLongitudinalRssStateSame
   {
     rssState.response = state::LongitudinalResponse::None;
   }
+  // spdlog::info("result: {}; safe: {}", result, isSafe);
 
   return result;
 }
@@ -211,6 +221,8 @@ bool RssStructuredSceneNonIntersectionChecker::calculateLongitudinalRssStateOppo
 
   if (situation.egoVehicleState.isInCorrectLane)
   {
+    // spdlog::info("Reached calculateLongitudinalRssStateOppositeDirection - correctlane");
+
     rssState.rssStateInformation.evaluator
       = state::RssStateEvaluator::LongitudinalDistanceOppositeDirectionEgoCorrectLane;
 
@@ -223,6 +235,8 @@ bool RssStructuredSceneNonIntersectionChecker::calculateLongitudinalRssStateOppo
   }
   else
   {
+    // spdlog::info("Reached calculateLongitudinalRssStateOppositeDirection - incorrectlane");
+
     rssState.rssStateInformation.evaluator = state::RssStateEvaluator::LongitudinalDistanceOppositeDirection;
 
     result = checkSafeLongitudinalDistanceOppositeDirection(situation.otherVehicleState,
@@ -262,6 +276,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateLateralRssState(Situatio
     // ego is the left vehicle, so right side has to be checked
     rssStateRight.rssStateInformation.evaluator = state::RssStateEvaluator::LateralDistance;
     rssStateRight.rssStateInformation.currentDistance = situation.relativePosition.lateralDistance;
+    // spdlog::info("Lat: ego is left, other is right");
     result = checkSafeLateralDistance(situation.egoVehicleState,
                                       situation.otherVehicleState,
                                       situation.relativePosition.lateralDistance,
@@ -275,6 +290,7 @@ bool RssStructuredSceneNonIntersectionChecker::calculateLateralRssState(Situatio
     rssStateRight.rssStateInformation.safeDistance = std::numeric_limits<physics::Distance>::max();
 
     // ego is the right vehicle, so left side has to be checked
+    // spdlog::info("Lat: ego is right, other is left");
     rssStateLeft.rssStateInformation.evaluator = state::RssStateEvaluator::LateralDistance;
     rssStateLeft.rssStateInformation.currentDistance = situation.relativePosition.lateralDistance;
     result = checkSafeLateralDistance(situation.otherVehicleState,
